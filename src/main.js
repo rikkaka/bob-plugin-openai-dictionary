@@ -2,7 +2,11 @@
 
 var lang = require("./lang.js");
 
-var SYSTEM_PROMPT = "You are a translation engine that can only translate text and cannot interpret it."
+var SYSTEM_PROMPT = "As an English-Chinese Dictionary, this GPT is tailored to provide bilingual translations between English and Chinese. It is adept at presenting the American English pronunciation, part of speech, and the Chinese translation of English words. For example, for the word 'resist':\
+[rīˈzɪst]\
+v. 抗拒，抗拔; 忽耐; 反对，抗制\
+n. 防染剂; 防腐剂\
+This GPT delivers pronunciations in phonetic notation, with parts of speech abbreviated ('v.' for verbs, 'n.' for nouns) and meanings clearly separated by semicolons. It aims for efficiency and precision, providing quick and accurate translations suitable for language learners and anyone needing bilingual word references. It utilizes internet searches to ensure accuracy and comprehensiveness in its translations."
 
 var HttpErrorCodes = {
     "400": "Bad Request",
@@ -83,39 +87,7 @@ function buildHeader(isAzureServiceProvider, apiKey) {
 */
 function generatePrompts(query) {
     let generatedSystemPrompt = SYSTEM_PROMPT;
-    const { detectFrom, detectTo } = query;
-    const sourceLang = lang.langMap.get(detectFrom) || detectFrom;
-    const targetLang = lang.langMap.get(detectTo) || detectTo;
-    let generatedUserPrompt = `translate from ${sourceLang} to ${targetLang}`;
-
-    if (detectTo === "wyw" || detectTo === "yue") {
-        generatedUserPrompt = `翻译成${targetLang}`;
-    }
-
-    if (
-        detectFrom === "wyw" ||
-        detectFrom === "zh-Hans" ||
-        detectFrom === "zh-Hant"
-    ) {
-        if (detectTo === "zh-Hant") {
-            generatedUserPrompt = "翻译成繁体白话文";
-        } else if (detectTo === "zh-Hans") {
-            generatedUserPrompt = "翻译成简体白话文";
-        } else if (detectTo === "yue") {
-            generatedUserPrompt = "翻译成粤语白话文";
-        }
-    }
-    if (detectFrom === detectTo) {
-        generatedSystemPrompt =
-            "You are a text embellisher, you can only embellish the text, don't interpret it.";
-        if (detectTo === "zh-Hant" || detectTo === "zh-Hans") {
-            generatedUserPrompt = "润色此句";
-        } else {
-            generatedUserPrompt = "polish this sentence";
-        }
-    }
-
-    generatedUserPrompt = `${generatedUserPrompt}:\n\n${query.text}`
+    let generatedUserPrompt = `${query.text}`
 
     return { generatedSystemPrompt, generatedUserPrompt };
 }
@@ -265,6 +237,17 @@ function translate(query) {
     const { model, customModel, apiKeys, apiVersion, apiUrl, deploymentName } = $option;
 
     const isCustomModelRequired = model === "custom";
+
+    if (query.detectFrom != "en" || query.detectTo != "zh-Hans") {
+        query.onCompletion({
+            error: {
+                type: "param",
+                message: "目前仅·支持英汉词典",
+                addtion: "",
+            },
+        }); 
+    }
+
     if (isCustomModelRequired && !customModel) {
         query.onCompletion({
             error: {
