@@ -1,13 +1,12 @@
 {
-  "identifier": "yetone.openai.translator",
-  "version": "2.1.2",
+  "identifier": "rikka.openai.dictionary",
+  "version": "0.0.1",
   "category": "translate",
-  "name": "OpenAI Translator",
-  "summary": "GPT powered translator",
+  "name": "OpenAI Dictionary",
+  "summary": "GPT powered dictionary",
   "icon": "",
-  "author": "yetone <yetoneful@gmail.com>",
-  "homepage": "https://github.com/yetone/bob-plugin-openai-translator",
-  "appcast": "https://raw.githubusercontent.com/yetone/bob-plugin-openai-translator/main/appcast.json",
+  "author": "rikka <dsywh123@gmail.com>",
+  "homepage": "https://github.com/rikkaka/bob-plugin-openai-dictionary",
   "minBobVersion": "1.8.0",
   "options": [
     {

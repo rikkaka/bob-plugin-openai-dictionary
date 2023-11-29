@@ -224,29 +224,29 @@ function handleResponse(query, targetText, textFromResponse) {
  * @type {Bob.Translate}
  */
 function translate(query) {
-    if (!lang.langMap.get(query.detectTo)) {
+    // if (!lang.langMap.get(query.detectTo)) {
+    //     query.onCompletion({
+    //         error: {
+    //             type: "unsupportLanguage",
+    //             message: "不支持该语种",
+    //             addtion: "不支持该语种",
+    //         },
+    //     });
+    // }
+
+    if (query.detectFrom != "en" || query.detectTo != "zh-Hans") {
         query.onCompletion({
             error: {
                 type: "unsupportLanguage",
-                message: "不支持该语种",
-                addtion: "不支持该语种",
+                message: "目前仅支持英汉词典",
+                addtion: "",
             },
-        });
+        }); 
     }
 
     const { model, customModel, apiKeys, apiVersion, apiUrl, deploymentName } = $option;
 
     const isCustomModelRequired = model === "custom";
-
-    if (query.detectFrom != "en" || query.detectTo != "zh-Hans") {
-        query.onCompletion({
-            error: {
-                type: "param",
-                message: "目前仅·支持英汉词典",
-                addtion: "",
-            },
-        }); 
-    }
 
     if (isCustomModelRequired && !customModel) {
         query.onCompletion({
