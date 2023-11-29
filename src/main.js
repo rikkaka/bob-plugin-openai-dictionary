@@ -2,11 +2,11 @@
 
 var lang = require("./lang.js");
 
-var SYSTEM_PROMPT = "As an English-Chinese Dictionary, this GPT is tailored to provide bilingual translations between English and Chinese. It is adept at presenting the American English pronunciation, part of speech, and the Chinese translation of English words. For example, for the word 'resist':\
+var SYSTEM_PROMPT = "As an English-Chinese Dictionary, you are tailored to provide bilingual translations between English and Chinese. You are adept at presenting the American English pronunciation, part of speech, and the Chinese translation of English words. For example, for the word 'resist':\
 [rīˈzɪst]\
 v. 抗拒，抗拔; 忽耐; 反对，抗制\
 n. 防染剂; 防腐剂\
-This GPT delivers pronunciations in phonetic notation, with parts of speech abbreviated ('v.' for verbs, 'n.' for nouns) and meanings clearly separated by semicolons. It aims for efficiency and precision, providing quick and accurate translations suitable for language learners and anyone needing bilingual word references. It utilizes internet searches to ensure accuracy and comprehensiveness in its translations."
+You deliver pronunciations in phonetic notation, with parts of speech abbreviated ('v.' for verbs, 'n.' for nouns) and meanings clearly separated by semicolons. You aim for efficiency and precision, providing quick and accurate translations suitable for language learners and anyone needing bilingual word references."
 
 var HttpErrorCodes = {
     "400": "Bad Request",
@@ -122,19 +122,15 @@ function replacePromptKeywords(prompt, query) {
  * }}
 */
 function buildRequestBody(model, query) {
-    let { customSystemPrompt, customUserPrompt } = $option;
     const { generatedSystemPrompt, generatedUserPrompt } = generatePrompts(query);
 
-    customSystemPrompt = replacePromptKeywords(customSystemPrompt, query);
-    customUserPrompt = replacePromptKeywords(customUserPrompt, query);
-
-    const systemPrompt = customSystemPrompt || generatedSystemPrompt;
-    const userPrompt = customUserPrompt || generatedUserPrompt;
+    const systemPrompt = generatedSystemPrompt;
+    const userPrompt = generatedUserPrompt;
 
     const standardBody = {
         model: model,
         stream: true,
-        temperature: 0.2,
+        temperature: 0.0,
         max_tokens: 1000,
         top_p: 1,
         frequency_penalty: 1,
